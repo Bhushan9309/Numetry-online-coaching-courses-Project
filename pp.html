@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Register</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body {
+    font-family: "Poppins", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url('../img/rental.jpg') no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.wrapper {
+    position: relative;
+    width: 420px;
+    height: 450px;
+    background: transparent;
+    border: 2px solid rgba(36, 33, 184, 0.1);
+    backdrop-filter: blur(30px);
+    border-radius: 10px;
+  color: #f41e69;
+    
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    transition: height 0.2s ease;
+}
+
+.wrapper.active {
+    height: 720px;
+}
+
+.wrapper .form-box {
+    width: 100%;
+    padding: 40px;
+}
+
+.wrapper.active .form-box.login {
+    transition: none;
+    transform: translateX(-400px);
+}
+
+.wrapper .form-box.register {
+    position: absolute;
+    transform: translateX(400px);
+}
+
+.wrapper.active .form-box.register {
+    transition: transform 0.18s ease;
+    transform: translateX(0);
+}
+
+form h1 {
+    font-size: 36px;
+    text-align: center;
+}
+
+.form-box .input-box {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin: 30px 0;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 40px;
+    font-size: 16px;
+  color: #f41e69;
+  
+    padding: 20px 45px 20px 20px;
+}
+
+.input-box input::placeholder {
+    color: #f41e69;
+}
+
+.input-box .icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+}
+
+.form-box .remember-forget {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14.5px;
+    margin: -15px 0 15px;
+}
+
+.remember-forget label input {
+    accent-color: #f41e69;
+    margin-right: 4px;
+}
+
+.remember-forget a {
+    color: #f41e69;
+    text-decoration: none;
+}
+
+.remember-forget a:hover {
+    text-decoration: underline;
+}
+
+form button {
+    width: 100%;
+    height: 45px;
+    background: #f41e69;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+form button:hover {
+    transform: translateY(-5px);
+}
+
+.form-box .register-link {
+    text-align: center;
+    font-size: 15px;
+}
+
+.register-link p {
+    margin: 0;
+}
+
+.register-link p a {
+    color: #f41e69;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register-link p a:hover {
+    text-decoration: underline;
+}
+
+
+    </style>
+    <script>
+       document.addEventListener("DOMContentLoaded", function () {
+    const wrapper = document.querySelector(".wrapper");
+    const registerLink = document.querySelector("#registerLink");
+    const loginLink = document.querySelector("#loginLink");
+
+    registerLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        wrapper.classList.add("active");
+    });
+
+    loginLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        wrapper.classList.remove("active");
+    });
+
+    document.querySelector("#registerForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch("/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.message);
+                wrapper.classList.remove("active");
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    });
+
+    document.querySelector("#loginForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch("/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.message);
+                window.location.href = "/main";
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    });
+});
+
+
+    </script>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="form-box login">
+            <form id="loginForm">
+                <h1>Login</h1>
+                <div class="input-box">
+                    <input type="email" placeholder="Email" name="email" required>
+                    <i class="icon md-email"></i>
+                </div>
+                <div class="input-box">
+                    <input type="password" placeholder="Password" name="password" required>
+                    <i class="icon ri-lock-password-fill"></i>
+                </div>
+                <div class="remember-forget">
+                    <label><input type="checkbox" name="remember">Remember me</label>
+                    <a href="#">Forget password</a>
+                </div>
+                <button type="submit">Login</button>
+                <div class="register-link">
+                    <p>Don't have an account? <a href="#" id="registerLink">Register</a></p>
+                </div>
+            </form>
+        </div>
+        <div class="form-box register">
+            <form id="registerForm">
+                <h1>Registration</h1>
+                <div class="input-box">
+                    <input type="text" placeholder="First name" name="first_name" required>
+                    <i class="icon fa-user"></i>
+                </div>
+                <div class="input-box">
+                    <input type="text" placeholder="Last name" name="last_name" required>
+                    <i class="icon fa-user"></i>
+                </div>
+                <div class="input-box">
+                    <input type="email" placeholder="Email" name="email" required>
+                    <i class="icon md-email"></i>
+                </div>
+                <div class="input-box">
+                    <input type="phone" placeholder="Phone Number" name="phone_number" required>
+                    <i class="icon fa-phone-alt"></i>
+                </div>
+                <div class="input-box">
+                    <input type="password" placeholder="Password" name="password" required>
+                    <i class="icon ri-lock-password-fill"></i>
+                </div>
+                <div class="remember-forget">
+                    <label><input type="checkbox" id="terms">I agree to the terms and conditions</label>
+                </div>
+                <button type="submit">Register</button>
+                <div class="register-link">
+                    <p>Already have an account? <a href="#" id="loginLink">Login</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

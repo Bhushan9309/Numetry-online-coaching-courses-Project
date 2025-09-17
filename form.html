@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/icon/logo.png') }}">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Booking</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+    <!-- CONTACT US -->
+    <div class="diffSection" id="contactus_section">
+		<button type="submit" id="csubmit"><a href="{{url_for('main')}}" style="color: white; text-decoration: none;"> Go to Home</a></button>        <center><p style="font-size: 50px; padding: 100px">Book the Course</p></center>
+        <div class="csec"></div>
+        <div class="back-contact">
+            <div class="cc">
+                <form id="bookingForm">
+                    <label>First Name <span class="imp">*</span></label><label style="margin-left: 185px">Last Name <span class="imp">*</span></label><br>
+                    <center>
+                    <input type="text" name="first_name" style="margin-right: 10px; width: 175px" required="required"><input type="text" name="last_name" style="width: 175px" required="required"><br>
+                    </center>
+                    <label>Email <span class="imp">*</span></label><br>
+                    <input type="email" name="email" style="width: 100%" required="required"><br>
+                    <label>Course Name<span class="imp">*</span></label><br>
+                    <input type="text" name="course_name" style="width: 100%" required="required"><br>
+                    <label>Message <span class="imp">*</span></label><br>
+                    <input type="text" name="message" style="width: 100%" required="required"><br>
+                    <label>Additional Details</label><br>
+                    <textarea name="additional_details"></textarea><br>
+                    <button type="submit" id="csubmit">Send Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#bookingForm').on('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                // Serialize form data
+                var formData = $(this).serialize();
+
+                // Send AJAX request
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ url_for('book_course') }}",
+                    data: formData,
+                    success: function(response) {
+                        alert(response.message);
+                    },
+                    error: function(xhr) {
+                        var errorMessage = xhr.responseJSON.message;
+                        alert(errorMessage);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
